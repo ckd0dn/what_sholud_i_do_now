@@ -19,7 +19,7 @@ class ActivityViewModel with ChangeNotifier {
 
   List<String> favoriteActivity = []; // 활동 즐겨찾기 목록
 
-  List<dynamic> completeActivity = []; // 완료 활동 달력 목록
+  List<dynamic> calendarActivity = []; // 예약 활동 달력 목록
 
   int getActivityCount = 0; // 광고 띄우기 위한 할일뽑기 횟수 카운트
 
@@ -31,11 +31,11 @@ class ActivityViewModel with ChangeNotifier {
 
     if(box.get(HiveDB.cal) != null ){
       List<dynamic> list = box.get(HiveDB.cal);
-      completeActivity.addAll(list);
+      calendarActivity.addAll(list);
     }
 
     print('즐겨찾기 >> $favoriteActivity}');
-    print('달력 >> $completeActivity}');
+    print('달력 >> $calendarActivity}');
 
   }
 
@@ -108,24 +108,21 @@ class ActivityViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  //활동 완료 (달력에 추가)
-  void addCompleteActivity(int idx) {
+  //활동 예약 (달력에 추가)
+  void addCalendarActivity(int idx, DateTime time) {
     Map<String, dynamic> map = {
       HiveDB.act: favoriteActivity[idx],
-      HiveDB.date: DateTime.now(),
+      HiveDB.date: time,
     };
 
-    completeActivity.add(map);
+    calendarActivity.add(map);
 
-    box.put(HiveDB.cal, completeActivity);
+    box.put(HiveDB.cal, calendarActivity);
 
-    print(box.get(HiveDB.cal));
-
+    //예약된 즐겨찾기 지우기
     favoriteActivity.removeAt(idx);
 
     notifyListeners();
-
-    Fluttertoast.showToast(msg: '완료 활동이 달력에 추가되었습니다');
   }
 
 

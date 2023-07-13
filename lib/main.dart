@@ -22,8 +22,6 @@ Future<void> main() async {
   //한글 로케일
   await initializeDateFormatting();
 
-
-
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(
@@ -45,10 +43,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: const HomeScreen(),
-      theme: ThemeData(fontFamily: 'Jalnan', useMaterial3: true, primaryColor: Colors.deepPurple),
+      theme: ThemeData(
+          fontFamily: 'Jalnan',
+          useMaterial3: true,
+          primaryColor: Colors.deepPurple),
       themeMode: ThemeMode.system,
     );
   }
 }
-
-
