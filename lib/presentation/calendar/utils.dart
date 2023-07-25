@@ -8,8 +8,11 @@ import 'package:table_calendar/table_calendar.dart';
 /// Example event class.
 class Event {
   final String title;
+  final String timeText;
+  final DateTime time;
+  bool alarm;
 
-  const Event(this.title);
+  Event(this.title, this.timeText, this.time, this.alarm);
 
   @override
   String toString() => title;

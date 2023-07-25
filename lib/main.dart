@@ -1,4 +1,6 @@
+import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -11,6 +13,13 @@ import 'package:what_sholud_i_do_now/presentation/home/home_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  //화면 회전 고정
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+  //알람초기화
+  await Alarm.init(showDebugLogs: true);
+
   //구글애드몹 SDK 초기화
   MobileAds.instance.initialize();
 
@@ -18,6 +27,7 @@ Future<void> main() async {
   await Hive.initFlutter();
 
   await Hive.openBox('DB');
+  await Hive.openBox('ALARM');
 
   //한글 로케일
   await initializeDateFormatting();
@@ -41,8 +51,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
+          child: child!,
+        );
+      },
       debugShowCheckedModeBanner: false,
-      home: const HomeScreen(),
+      home: const HomeScreen(pageIndex: 0,),
       theme: ThemeData(
           fontFamily: 'Jalnan',
           useMaterial3: true,

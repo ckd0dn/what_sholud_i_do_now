@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'package:what_sholud_i_do_now/presentation/activity/activity_state.dart';
 import 'package:what_sholud_i_do_now/utils/hive_db.dart';
 
 import '../../domain/repository/activity_repository.dart';
+import '../home/home_screen.dart';
 
 
 class ActivityViewModel with ChangeNotifier {
@@ -34,8 +36,6 @@ class ActivityViewModel with ChangeNotifier {
       calendarActivity.addAll(list);
     }
 
-    print('즐겨찾기 >> $favoriteActivity}');
-    print('달력 >> $calendarActivity}');
 
   }
 
@@ -82,18 +82,25 @@ class ActivityViewModel with ChangeNotifier {
   }
 
   //즐겨찾기에 추가
-  void addFavoriteList() {
+  void addFavoriteList(context) {
     if (favoriteActivity.contains(state.activity.activity)) {
       Fluttertoast.showToast(
           msg: "이미 즐겨찾기에 추가된 일입니다", gravity: ToastGravity.CENTER);
+      Navigator.pop(context);
+
     } else {
       favoriteActivity.add(state.activity.activity);
 
       box.put(HiveDB.fav, favoriteActivity);
 
-      print(box.get(HiveDB.fav));
-
       notifyListeners();
+
+      Navigator.pushAndRemoveUntil(context,  MaterialPageRoute(
+        builder: (context) =>
+        const HomeScreen(pageIndex: 1),
+      ), (route) => false);
+
+
     }
   }
 
@@ -102,8 +109,6 @@ class ActivityViewModel with ChangeNotifier {
     favoriteActivity.removeAt(idx);
 
     box.put(HiveDB.fav, favoriteActivity);
-
-    print(box.get(HiveDB.fav));
 
     notifyListeners();
   }
@@ -119,8 +124,9 @@ class ActivityViewModel with ChangeNotifier {
 
     box.put(HiveDB.cal, calendarActivity);
 
-    //예약된 즐겨찾기 지우기
-    favoriteActivity.removeAt(idx);
+    //예약된 즐겨찾기 지우기 (안하는게 나을듯함)
+    // favoriteActivity.removeAt(idx);
+    // box.put(HiveDB.fav, favoriteActivity);
 
     notifyListeners();
   }

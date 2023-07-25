@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:what_sholud_i_do_now/data/source/remote/bored_api.dart';
 import 'package:what_sholud_i_do_now/presentation/activity/activity_state.dart';
 import 'package:what_sholud_i_do_now/presentation/activity/activity_view_model.dart';
+import 'package:what_sholud_i_do_now/presentation/home/home_screen.dart';
 import 'package:what_sholud_i_do_now/utils/app_colors.dart';
 import 'package:what_sholud_i_do_now/utils/util_widget/shrink_button.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -19,15 +20,20 @@ class ActivityScreen extends StatefulWidget {
 class _ActivityScreenState extends State<ActivityScreen> {
 
 
-  String admobRewordId = 'ca-app-pub-2807201744264927/2757493141'; //리워드 ID
-  String admobTestId = 'ca-app-pub-3940256099942544/1033173712'; //테스트 ID
+  String admobFrontId = 'ca-app-pub-2807201744264927/3115399997'; //전면광고 ID
+  String admobBannerId = 'ca-app-pub-2807201744264927/8709409970'; //배너광고 ID
+
+  // String admobTestId = 'ca-app-pub-3940256099942544/1033173712'; //테스트 ID
+  // String admobBannerTestId = 'ca-app-pub-3940256099942544/6300978111'; //테스트 ID
 
   InterstitialAd? _interstitialAd;
+  BannerAd? banner;
 
   @override
   void initState() {
     super.initState();
     loadAd();
+    initBanner();
   }
 
   @override
@@ -40,7 +46,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
   void loadAd() {
 
     InterstitialAd.load(
-        adUnitId: admobTestId,
+        adUnitId: admobFrontId,
         request: const AdRequest(),
         adLoadCallback: InterstitialAdLoadCallback(
           // Called when an ad is successfully received.
@@ -72,7 +78,21 @@ class _ActivityScreenState extends State<ActivityScreen> {
             debugPrint('InterstitialAd failed to load: $error');
           },
         ));
+
   }
+
+  initBanner() {
+    banner = BannerAd(
+      listener: BannerAdListener(
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {},
+        onAdLoaded: (_) {},
+      ),
+      size: AdSize.banner,
+      adUnitId: admobBannerId,
+      request: const AdRequest(),
+    )..load();
+  }
+
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<ActivityViewModel>();
@@ -80,70 +100,77 @@ class _ActivityScreenState extends State<ActivityScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.homeBackgroundColor,
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "랜덤으로 활동을 받아보세요!",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            color: Colors.black,
+            height: 50,
+            child: AdWidget(
+              ad: banner!,
             ),
-            !state.isActivity ?
-            Expanded(
-              child: Center(
-                child: GestureDetector(
-                  onTap: () async {
-                    viewModel.getActivity('', '', '', '');
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: 300,
-                    height: 300,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child:  Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(
-                          height: 40,
+          ),
+          const Padding(
+            padding: EdgeInsets.only(top: 20, left: 16),
+            child: Text(
+              "랜덤으로 활동을 받아보세요!",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
+          ),
+          !state.isActivity ?
+          Expanded(
+            child: Center(
+              child: GestureDetector(
+                onTap: () async {
+                  viewModel.getActivity('', '', '', '');
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  width: 300,
+                  height: 300,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child:  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 20),
+                        child: Text(
+                          "오늘 뭐하지?",
+                          style: TextStyle(fontSize: 36, fontWeight: FontWeight.w500),
                         ),
-                        const Padding(
-                          padding: EdgeInsets.only(bottom: 20),
-                          child: Text(
-                            "지금 뭐하지?",
-                            style: TextStyle(fontSize: 36, fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      SizedBox(
+                        height: 50,
+                        child: DefaultTextStyle(
+                          style: const TextStyle(fontSize: 30, color: AppColors.homeBackgroundColor, fontWeight: FontWeight.bold),
+                          child: AnimatedTextKit(
+                            repeatForever: true,
+                            animatedTexts: [
+                              ScaleAnimatedText('누르기'),
+                            ],
+                            onTap: () {
+                              viewModel.getActivity('', '', '', '');
+                            },
                           ),
                         ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        SizedBox(
-                          height: 50,
-                          child: DefaultTextStyle(
-                            style: const TextStyle(fontSize: 30, color: AppColors.homeBackgroundColor, fontWeight: FontWeight.bold),
-                            child: AnimatedTextKit(
-                              repeatForever: true,
-                              animatedTexts: [
-                                ScaleAnimatedText('누르기'),
-                              ],
-                              onTap: () {
-                                viewModel.getActivity('', '', '', '');
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ) : state.isLoading ? loadingWidget() : activityWidget(state, viewModel, context)
-          ],
-        ),
-      )
+            ),
+          ) : state.isLoading ? loadingWidget() : activityWidget(state, viewModel, context)
+        ],
+      ),
     );
   }
 
@@ -182,9 +209,12 @@ class _ActivityScreenState extends State<ActivityScreen> {
                           child: const Text('아니요', style: TextStyle(color: Colors.black),),
                         ),
                         TextButton(
-                          onPressed: () {
-                            viewModel.addFavoriteList();
-                            Navigator.pop(context, '네');
+                          onPressed: ()  {
+                            viewModel.addFavoriteList(context);
+                            // Navigator.pushAndRemoveUntil(context,  MaterialPageRoute(
+                            //   builder: (context) =>
+                            //   const HomeScreen(pageIndex: 1),
+                            // ), (route) => false);
                           },
                           child: const Text('네', style: TextStyle(color: Colors.blue),),
                         ),
@@ -211,7 +241,6 @@ class _ActivityScreenState extends State<ActivityScreen> {
               child: ShrinkButton(
                 onPressed: () {
                   Future.delayed(const Duration(milliseconds: 300), () async {
-
 
                     if(viewModel.getActivityCount >= 5 ){
 

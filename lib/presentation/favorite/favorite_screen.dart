@@ -1,13 +1,10 @@
-import 'package:day_night_time_picker/lib/constants.dart';
-import 'package:day_night_time_picker/lib/daynight_timepicker.dart';
-import 'package:day_night_time_picker/lib/state/time.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../activity/activity_view_model.dart';
-import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
+
 
 class FavoriteScreen extends StatelessWidget {
   const FavoriteScreen({Key? key}) : super(key: key);
@@ -38,8 +35,9 @@ class FavoriteScreen extends StatelessWidget {
             children: [
               const Text(
                 "일정에 맞춰 활동을 달력에 예약해보세요!",
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               ),
+              viewModel.favoriteActivity.isNotEmpty ?
               ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
@@ -144,7 +142,14 @@ class FavoriteScreen extends StatelessWidget {
                         ],
                       ),
                     );
-                  }),
+                  }) :
+              const Padding(
+                padding: EdgeInsets.only(top: 20),
+                child: Text(
+                  "즐겨찾기에 저장된 활동이 없습니다.\n홈 화면에서 받은 활동을 추가해주세요.",
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+              ),
             ],
           ),
         ),

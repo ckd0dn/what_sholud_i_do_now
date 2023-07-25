@@ -32,7 +32,7 @@ class ActivityRepositoryImpl implements ActivityRepository{
       return Result.success(translationListing);
     }catch (e) {
       if (kDebugMode) {
-        print(e);
+
       }
       return Result.error(Exception('데이터 로드 실패'));
     }

@@ -4,4 +4,5 @@ class HiveDB {
   static const act = 'activity';
   static const date = 'datetime';
 
+
 }
