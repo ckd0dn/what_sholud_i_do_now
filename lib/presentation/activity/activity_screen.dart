@@ -242,6 +242,10 @@ class _ActivityScreenState extends State<ActivityScreen> {
                 onPressed: () {
                   Future.delayed(const Duration(milliseconds: 300), () async {
 
+                    if(viewModel.reviewCount == 7) {
+                      viewModel.requestReview();
+                    }
+
                     if(viewModel.getActivityCount >= 5 ){
 
                       loadAd();

@@ -7,7 +7,7 @@ import 'package:what_sholud_i_do_now/utils/hive_db.dart';
 
 import '../../domain/repository/activity_repository.dart';
 import '../home/home_screen.dart';
-
+import 'package:in_app_review/in_app_review.dart';
 
 class ActivityViewModel with ChangeNotifier {
 
@@ -25,6 +25,10 @@ class ActivityViewModel with ChangeNotifier {
 
   int getActivityCount = 0; // 광고 띄우기 위한 할일뽑기 횟수 카운트
 
+  final InAppReview _inAppReview = InAppReview.instance;  //인앱 리뷰
+  final String _playStoreId = 'com.cwpark.what_sholud_i_do_today';
+
+  int reviewCount = 0; //리뷰를 위한 카운트
 
   ActivityViewModel(this._activityRepository) {
     if(box.get(HiveDB.fav) != null ){
@@ -43,6 +47,7 @@ class ActivityViewModel with ChangeNotifier {
   Future getActivity(String type, String participants, String price,
       String accessibility) async {
     getActivityCount++;
+    reviewCount++;
 
     _state = state.copyWith(
       isLoading: true,
@@ -130,6 +135,13 @@ class ActivityViewModel with ChangeNotifier {
 
     notifyListeners();
   }
+
+
+  Future<void> requestReview() => _inAppReview.requestReview();
+
+  Future<void> openStoreListing() => _inAppReview.openStoreListing(
+    microsoftStoreId: _playStoreId,
+  );
 
 
 }
