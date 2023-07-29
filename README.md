@@ -1,6 +1,6 @@
-# what_sholud_i_do_now
+# 오늘 뭐하지?
 
-An app that decides what to do when you're bored
+심심하거나 원하는 활동을 찾고 싶을때 사용 할 수있는 앱입니다.
 
 ## Getting Started
 
